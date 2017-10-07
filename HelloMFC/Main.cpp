@@ -4,10 +4,9 @@
  *    Author  : Smile
  *    Contact : smile@illidan.org
  *
- *    Brief   : 最简单的MFC程序
+ *    Brief   : 最简单的MFC程序 - 带有窗口的
  *
  ****************************************************************************************************************/
-
 #include <afxwin.h>
 
 class MyApp : public CWinApp
@@ -18,7 +17,13 @@ public:
 
 BOOL MyApp::InitInstance()
 {
-	::MessageBox(0, TEXT("Hello"), TEXT("illidan"), MB_OK);
+	CFrameWnd* pFrameWnd = new CFrameWnd;
+	this->m_pMainWnd = pFrameWnd;
+
+	pFrameWnd->Create(NULL, TEXT("illidan"));
+	pFrameWnd->ShowWindow(SW_SHOW);
+	pFrameWnd->UpdateWindow();
+
 	return TRUE;
 }
 
