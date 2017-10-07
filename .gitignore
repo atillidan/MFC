@@ -1,0 +1,12 @@
+
+*.db
+*.opendb
+*.tlog
+*.log
+*.obj
+*.idb
+*.pdb
+*.exe
+*.ilk
+.vs/AllInOne/v14/.suo
+.vs/MFC/v14/.suo
