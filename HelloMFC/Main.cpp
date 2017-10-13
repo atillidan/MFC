@@ -11,27 +11,35 @@
 
 class MyFrameWnd : public CFrameWnd
 {
+	DECLARE_MESSAGE_MAP()
 public:
-	virtual LRESULT WindowProc(UINT uMsg, WPARAM wParam, LPARAM lParam);
-
+	afx_msg int OnCreate(LPCREATESTRUCT);
+	afx_msg void OnPaint();
+	afx_msg void OnSize(UINT, int, int);
 };
 
-LRESULT MyFrameWnd::WindowProc(UINT uMsg, WPARAM wParam, LPARAM lParam)
+BEGIN_MESSAGE_MAP(MyFrameWnd, CFrameWnd)
+	ON_WM_CREATE()
+	ON_WM_PAINT()
+	ON_WM_SIZE()
+END_MESSAGE_MAP()
+
+int MyFrameWnd::OnCreate(LPCREATESTRUCT)
+{
+	AfxMessageBox(TEXT("On Create!"));
+	return 0;
+}
+void MyFrameWnd::OnPaint()
 {
 	CDC* cdc;
 	PAINTSTRUCT pt;
-	switch (uMsg)
-	{
-	case WM_PAINT:
-	{
-		cdc = BeginPaint(&pt);
-		cdc->TextOut(0, 0, TEXT("Hello MFC Paint!"));
-		EndPaint(&pt);
-		break;
-	}
-	}
-
-	return CFrameWnd::WindowProc(uMsg, wParam, lParam);
+	cdc = BeginPaint(&pt);
+	cdc->TextOut(0, 0, TEXT("Hello Text!"));
+	EndPaint(&pt);
+}
+void MyFrameWnd::OnSize(UINT, int, int)
+{
+	AfxMessageBox(TEXT("On Size!"));
 }
 
 class MyApp : public CWinApp
