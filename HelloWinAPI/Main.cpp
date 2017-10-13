@@ -4,7 +4,7 @@
  *    Author  : Smile
  *    Contact : smile@illidan.org
  *
- *    Brief   : 最简单的WinAPI程序 - 带有窗口的
+ *    Brief   : 最简单的WinAPI程序 - 带有窗口的 - 带有消息的
  *
  ****************************************************************************************************************/
 #include <windows.h>
@@ -56,8 +56,17 @@ LRESULT CALLBACK WindowProc(
 	_In_ LPARAM lParam
 )
 {
+	HDC hdc;
+	PAINTSTRUCT pt;
 	switch (uMsg)
 	{
+	case WM_PAINT:
+	{
+		hdc = BeginPaint(hwnd, &pt);
+		TextOut(hdc, 0, 0, TEXT("Hello WinAPI Paint!"), 19);
+		EndPaint(hwnd, &pt);
+	}
+		break;
 	case WM_DESTROY:
 		PostQuitMessage(0);
 	}
