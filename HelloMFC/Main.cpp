@@ -8,71 +8,52 @@
  *
  ****************************************************************************************************************/
 #include <afxwin.h>
+#include "resource.h"
 
 class MyFrameWnd : public CFrameWnd
 {
 	DECLARE_MESSAGE_MAP()
 public:
-	//afx_msg int OnCreate(LPCREATESTRUCT);
-	//afx_msg void OnPaint();
-	//afx_msg void OnSize(UINT, int, int);
-	afx_msg LRESULT MyCreate(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT MyPaint(WPARAM wParam, LPARAM lParam);
-	afx_msg LRESULT MySize(WPARAM wParam, LPARAM lParam);
+	afx_msg LRESULT Create(WPARAM wParam, LPARAM lParam);
+	afx_msg void New();
+	afx_msg void Save();
+private:
+	CMenu m_Menu;
 };
 
 BEGIN_MESSAGE_MAP(MyFrameWnd, CFrameWnd)
-	//ON_WM_CREATE()
-	//ON_WM_PAINT()
-	//ON_WM_SIZE()
-	ON_MESSAGE(WM_CREATE, MyCreate)
-	ON_MESSAGE(WM_PAINT, MyPaint)
-	ON_MESSAGE(WM_SIZE, MySize)
+	ON_MESSAGE(WM_CREATE, Create)
+	ON_COMMAND(ID_NEW, New)
+	ON_COMMAND(ID_SAVE, Save)
 END_MESSAGE_MAP()
 
-//int MyFrameWnd::OnCreate(LPCREATESTRUCT)
-//{
-//	AfxMessageBox(TEXT("On Create!"));
-//	return 0;
-//}
-//void MyFrameWnd::OnPaint()
-//{
-//	CDC* cdc;
-//	PAINTSTRUCT pt;
-//	cdc = BeginPaint(&pt);
-//	cdc->TextOut(0, 0, TEXT("Hello Text!"));
-//	EndPaint(&pt);
-//}
-//void MyFrameWnd::OnSize(UINT, int, int)
-//{
-//	AfxMessageBox(TEXT("On Size!"));
-//}
+afx_msg LRESULT MyFrameWnd::Create(WPARAM wParam, LPARAM lParam)
+{
+	m_Menu.LoadMenu(IDR_MENU1);
+	SetMenu(&m_Menu);
+	return 0;
+}
 
-afx_msg LRESULT MyFrameWnd::MyCreate(WPARAM wParam, LPARAM lParam)
+afx_msg void MyFrameWnd::New()
 {
-	AfxMessageBox(TEXT("On Create!"));
-	return 0;
+	AfxMessageBox(TEXT("On New!"));
 }
-afx_msg LRESULT MyFrameWnd::MyPaint(WPARAM wParam, LPARAM lParam)
+afx_msg void MyFrameWnd::Save()
 {
-	CDC* cdc;
-	PAINTSTRUCT pt;
-	cdc = BeginPaint(&pt);
-	cdc->TextOut(0, 0, TEXT("Hello Text!"));
-	EndPaint(&pt);
-	return 0;
-}
-afx_msg LRESULT MyFrameWnd::MySize(WPARAM wParam, LPARAM lParam)
-{
-	AfxMessageBox(TEXT("On Size!"));
-	return 0;
+	AfxMessageBox(TEXT("On Save!"));
 }
 
 class MyApp : public CWinApp
 {
+	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL InitInstance();
+	afx_msg void Exit();
 };
+
+BEGIN_MESSAGE_MAP(MyApp, CWinApp)
+	ON_COMMAND(ID_EXIT, Exit)
+END_MESSAGE_MAP()
 
 BOOL MyApp::InitInstance()
 {
@@ -84,6 +65,11 @@ BOOL MyApp::InitInstance()
 	pFrameWnd->UpdateWindow();
 
 	return TRUE;
+}
+
+afx_msg void MyApp::Exit()
+{
+	::PostQuitMessage(0);
 }
 
 MyApp app;
