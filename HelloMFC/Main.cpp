@@ -11,18 +11,46 @@
 
 class MyFrameWnd : public CFrameWnd
 {
-	DECLARE_MESSAGE_MAP()
+	//DECLARE_MESSAGE_MAP()
+protected:
+	static const AFX_MSGMAP* PASCAL GetThisMessageMap();
+	virtual const AFX_MSGMAP* GetMessageMap() const;
+
 public:
 	afx_msg int OnCreate(LPCREATESTRUCT);
 	afx_msg void OnPaint();
 	afx_msg void OnSize(UINT, int, int);
 };
 
-BEGIN_MESSAGE_MAP(MyFrameWnd, CFrameWnd)
-	ON_WM_CREATE()
-	ON_WM_PAINT()
-	ON_WM_SIZE()
-END_MESSAGE_MAP()
+//BEGIN_MESSAGE_MAP(MyFrameWnd, CFrameWnd)
+//	ON_WM_CREATE()
+//	ON_WM_PAINT()
+//	ON_WM_SIZE()
+//END_MESSAGE_MAP()
+
+//PTM_WARNING_DISABLE
+__pragma(warning(push))
+__pragma(warning(disable : 4867))
+const AFX_MSGMAP* MyFrameWnd::GetMessageMap() const
+{ 
+	return GetThisMessageMap(); 
+}
+const AFX_MSGMAP* PASCAL MyFrameWnd::GetThisMessageMap()
+{
+	typedef MyFrameWnd ThisClass;
+	typedef CFrameWnd TheBaseClass;
+	static const AFX_MSGMAP_ENTRY _messageEntries[] =
+	{
+		{ WM_CREATE, 0, 0, 0, AfxSig_is, (AFX_PMSG)(AFX_PMSGW)(static_cast<int (AFX_MSG_CALL CWnd::*)(LPCREATESTRUCT)> (&ThisClass::OnCreate)) },
+		{ WM_PAINT, 0, 0, 0, AfxSig_vv, (AFX_PMSG)(AFX_PMSGW)(static_cast<void (AFX_MSG_CALL CWnd::*)(void)> (&ThisClass::OnPaint)) },
+		{ WM_SIZE, 0, 0, 0, AfxSig_vwii, (AFX_PMSG)(AFX_PMSGW)(static_cast<void (AFX_MSG_CALL CWnd::*)(UINT, int, int)> (&ThisClass::OnSize)) },
+		{ 0, 0, 0, 0, AfxSig_end, (AFX_PMSG)0 }
+	};
+	static const AFX_MSGMAP messageMap = { &TheBaseClass::GetThisMessageMap, &_messageEntries[0] };
+	return &messageMap;
+}
+__pragma(warning(pop))
+//PTM_WARNING_RESTORE
 
 int MyFrameWnd::OnCreate(LPCREATESTRUCT)
 {
