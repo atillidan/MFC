@@ -17,6 +17,7 @@ public:
 	afx_msg LRESULT Create(WPARAM wParam, LPARAM lParam);
 	afx_msg void New();
 	afx_msg void Save();
+	afx_msg void Exit();
 private:
 	CMenu m_Menu;
 };
@@ -25,6 +26,7 @@ BEGIN_MESSAGE_MAP(MyFrameWnd, CFrameWnd)
 	ON_MESSAGE(WM_CREATE, Create)
 	ON_COMMAND(ID_NEW, New)
 	ON_COMMAND(ID_SAVE, Save)
+	ON_COMMAND(ID_EXIT, Exit)
 END_MESSAGE_MAP()
 
 afx_msg LRESULT MyFrameWnd::Create(WPARAM wParam, LPARAM lParam)
@@ -38,9 +40,15 @@ afx_msg void MyFrameWnd::New()
 {
 	AfxMessageBox(TEXT("On New!"));
 }
+
 afx_msg void MyFrameWnd::Save()
 {
 	AfxMessageBox(TEXT("On Save!"));
+}
+
+afx_msg void MyFrameWnd::Exit()
+{
+	AfxMessageBox(TEXT("On Exit!"));
 }
 
 class MyApp : public CWinApp
