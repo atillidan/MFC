@@ -15,6 +15,8 @@ class MyFrameWnd : public CFrameWnd
 {
 	DECLARE_MESSAGE_MAP()
 public:
+	afx_msg void OnTimer(UINT_PTR);
+	afx_msg void OnMouseMove(UINT, CPoint);
 	afx_msg LRESULT Create(WPARAM wParam, LPARAM lParam);
 	afx_msg void New();
 	afx_msg void Save();
@@ -22,9 +24,12 @@ public:
 private:
 	CMenu m_Menu;
 	CToolBar m_ToolBar;
+	CStatusBar m_StatusBar;
 };
 
 BEGIN_MESSAGE_MAP(MyFrameWnd, CFrameWnd)
+	ON_WM_TIMER()
+	ON_WM_MOUSEMOVE()
 	ON_MESSAGE(WM_CREATE, Create)
 	ON_COMMAND(ID_NEW, New)
 	ON_COMMAND(ID_SAVE, Save)
@@ -33,6 +38,22 @@ BEGIN_MESSAGE_MAP(MyFrameWnd, CFrameWnd)
 	ON_COMMAND(ID_B, Save)
 	ON_COMMAND(ID_C, Exit)
 END_MESSAGE_MAP()
+
+afx_msg void MyFrameWnd::OnTimer(UINT_PTR)
+{
+	SYSTEMTIME st = { 0 };
+	GetLocalTime(&st);
+	CString time;
+	time.Format(TEXT("%d年-%d月-%d日 %d:%d:%d"), st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+	m_StatusBar.SetPaneText(1, time, TRUE);
+}
+
+afx_msg void MyFrameWnd::OnMouseMove(UINT, CPoint pt)
+{
+	CString pos;
+	pos.Format(TEXT("X:%d, Y:%d"), pt.x, pt.y);
+	m_StatusBar.SetPaneText(2, pos, TRUE);
+}
 
 afx_msg LRESULT MyFrameWnd::Create(WPARAM wParam, LPARAM lParam)
 {
@@ -47,6 +68,21 @@ afx_msg LRESULT MyFrameWnd::Create(WPARAM wParam, LPARAM lParam)
 	m_ToolBar.EnableDocking(CBRS_ALIGN_ANY);
 	EnableDocking(CBRS_ALIGN_ANY);
 	DockControlBar(&m_ToolBar, AFX_IDW_DOCKBAR_LEFT);
+
+	//状态栏
+	m_StatusBar.Create(this);
+	const UINT Indicators[] = { 0, 1, 2 };
+	m_StatusBar.SetIndicators(Indicators, 3);
+	m_StatusBar.SetPaneInfo(1, 1, SBPS_NOBORDERS, 200);
+	m_StatusBar.SetPaneInfo(2, 2, SBPS_NOBORDERS, 120);
+	SetTimer(100, 1000, NULL);
+
+	//状态栏初始化
+	SYSTEMTIME st = { 0 };
+	GetLocalTime(&st);
+	CString time;
+	time.Format(TEXT("%d年-%d月-%d日 %d:%d:%d"), st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
+	m_StatusBar.SetPaneText(1, time, TRUE);
 
 	return 0;
 }
