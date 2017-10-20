@@ -8,98 +8,30 @@
  *
  ****************************************************************************************************************/
 #include <afxwin.h>
-#include <afxext.h>
+#include <afxframewndex.h>
+#include <afxribbonbar.h>
+
 #include "resource.h"
 
-class MyFrameWnd : public CFrameWnd
+class MyFrameWnd : public CFrameWndEx
 {
 	DECLARE_MESSAGE_MAP()
 public:
-	afx_msg void OnTimer(UINT_PTR);
-	afx_msg void OnMouseMove(UINT, CPoint);
-	afx_msg LRESULT Create(WPARAM wParam, LPARAM lParam);
-	afx_msg void New();
-	afx_msg void Save();
-	afx_msg void Exit();
+	afx_msg int OnCreate(LPCREATESTRUCT);
 private:
-	CMenu m_Menu;
-	CToolBar m_ToolBar;
-	CStatusBar m_StatusBar;
+	CMFCRibbonBar m_RibbonBar;
 };
 
-BEGIN_MESSAGE_MAP(MyFrameWnd, CFrameWnd)
-	ON_WM_TIMER()
-	ON_WM_MOUSEMOVE()
-	ON_MESSAGE(WM_CREATE, Create)
-	ON_COMMAND(ID_NEW, New)
-	ON_COMMAND(ID_SAVE, Save)
-	ON_COMMAND(ID_EXIT, Exit)
-	ON_COMMAND(ID_A, New)
-	ON_COMMAND(ID_B, Save)
-	ON_COMMAND(ID_C, Exit)
+BEGIN_MESSAGE_MAP(MyFrameWnd, CFrameWndEx)
+	ON_WM_CREATE()
 END_MESSAGE_MAP()
 
-afx_msg void MyFrameWnd::OnTimer(UINT_PTR)
+afx_msg int MyFrameWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-	SYSTEMTIME st = { 0 };
-	GetLocalTime(&st);
-	CString time;
-	time.Format(TEXT("%d年-%d月-%d日 %d:%d:%d"), st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
-	m_StatusBar.SetPaneText(1, time, TRUE);
-}
+	m_RibbonBar.Create(this);
+	m_RibbonBar.LoadFromResource(IDR_RIBBON1);
 
-afx_msg void MyFrameWnd::OnMouseMove(UINT, CPoint pt)
-{
-	CString pos;
-	pos.Format(TEXT("X:%d, Y:%d"), pt.x, pt.y);
-	m_StatusBar.SetPaneText(2, pos, TRUE);
-}
-
-afx_msg LRESULT MyFrameWnd::Create(WPARAM wParam, LPARAM lParam)
-{
-	//菜单
-	m_Menu.LoadMenu(IDR_MENU1);
-	SetMenu(&m_Menu);
-
-	//工具条
-	m_ToolBar.Create(this);
-	m_ToolBar.SetWindowText(TEXT("工具条"));
-	m_ToolBar.LoadToolBar(IDR_TOOLBAR1);
-	m_ToolBar.EnableDocking(CBRS_ALIGN_ANY);
-	EnableDocking(CBRS_ALIGN_ANY);
-	DockControlBar(&m_ToolBar, AFX_IDW_DOCKBAR_LEFT);
-
-	//状态栏
-	m_StatusBar.Create(this);
-	const UINT Indicators[] = { 0, 1, 2 };
-	m_StatusBar.SetIndicators(Indicators, 3);
-	m_StatusBar.SetPaneInfo(1, 1, SBPS_NOBORDERS, 200);
-	m_StatusBar.SetPaneInfo(2, 2, SBPS_NOBORDERS, 120);
-	SetTimer(100, 1000, NULL);
-
-	//状态栏初始化
-	SYSTEMTIME st = { 0 };
-	GetLocalTime(&st);
-	CString time;
-	time.Format(TEXT("%d年-%d月-%d日 %d:%d:%d"), st.wYear, st.wMonth, st.wDay, st.wHour, st.wMinute, st.wSecond);
-	m_StatusBar.SetPaneText(1, time, TRUE);
-
-	return 0;
-}
-
-afx_msg void MyFrameWnd::New()
-{
-	AfxMessageBox(TEXT("On New!"));
-}
-
-afx_msg void MyFrameWnd::Save()
-{
-	AfxMessageBox(TEXT("On Save!"));
-}
-
-afx_msg void MyFrameWnd::Exit()
-{
-	AfxMessageBox(TEXT("On Exit!"));
+	return CFrameWndEx::OnCreate(lpCreateStruct);
 }
 
 class MyApp : public CWinApp
@@ -107,15 +39,15 @@ class MyApp : public CWinApp
 	DECLARE_MESSAGE_MAP()
 public:
 	virtual BOOL InitInstance();
-	afx_msg void Exit();
 };
 
 BEGIN_MESSAGE_MAP(MyApp, CWinApp)
-	ON_COMMAND(ID_EXIT, Exit)
 END_MESSAGE_MAP()
 
 BOOL MyApp::InitInstance()
 {
+	AfxOleInit();
+
 	CFrameWnd* pFrameWnd = new MyFrameWnd;
 	this->m_pMainWnd = pFrameWnd;
 
@@ -124,11 +56,6 @@ BOOL MyApp::InitInstance()
 	pFrameWnd->UpdateWindow();
 
 	return TRUE;
-}
-
-afx_msg void MyApp::Exit()
-{
-	::PostQuitMessage(0);
 }
 
 MyApp app;

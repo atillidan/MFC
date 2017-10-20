@@ -30,8 +30,8 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="toolbar1.bmp">
+    <None Include="ribbon1.mfcribbon-ms">
       <Filter>Resource Files</Filter>
-    </Image>
+    </None>
   </ItemGroup>
 </Project>
