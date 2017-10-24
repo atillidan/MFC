@@ -2,45 +2,52 @@
 #include <string.h>
 
 #define DECLARE_DYNAMIC_INFO()\
-	private:\
+	protected:\
 		static const char* s_ClassName;\
 	public:\
-		virtual const char* GetClassName();
+		virtual const char* GetClassName();\
+		virtual const char* GetBaseClassName();
 
-#define IMPLEMENT_DYNAMIC_INFO(CLASSNAME)\
+#define IMPLEMENT_DYNAMIC_INFO(CLASSNAME, BASECLASSNAME)\
 	const char* CLASSNAME::s_ClassName = #CLASSNAME;\
 	const char* CLASSNAME::GetClassName()\
 	{\
 		return s_ClassName;\
+	}\
+	const char* CLASSNAME::GetBaseClassName()\
+	{\
+		return BASECLASSNAME::s_ClassName;\
 	}
 
 class CObject
 {
 	DECLARE_DYNAMIC_INFO()
 };
-IMPLEMENT_DYNAMIC_INFO(CObject)
+IMPLEMENT_DYNAMIC_INFO(CObject, CObject)
 
 class A : public CObject
 {
 	DECLARE_DYNAMIC_INFO()
 };
-IMPLEMENT_DYNAMIC_INFO(A)
+IMPLEMENT_DYNAMIC_INFO(A, CObject)
 
 class B : public CObject
 {
 	DECLARE_DYNAMIC_INFO()
 };
-IMPLEMENT_DYNAMIC_INFO(B)
+IMPLEMENT_DYNAMIC_INFO(B, CObject)
 
 void PrintInfo(CObject* p)
 {
 	if (strcmp(p->GetClassName(), "A") == 0)
 	{
-		printf("Object is a Class of A.\n");
+		printf("Object is a Class of %s.\n", p->GetClassName());
+		printf("Base Class of %s is %s\n", p->GetClassName(), p->GetBaseClassName());
 	}
 	if (strcmp(p->GetClassName(), "B") == 0)
 	{
-		printf("Object is a Class of B.\n");
+		printf("Object is a Class of %s.\n", p->GetClassName());
+		printf("Base Class of %s is %s\n", p->GetClassName(), p->GetBaseClassName());
 	}
 }
 
