@@ -18,12 +18,21 @@ class MyFrameWnd : public CFrameWndEx
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg int OnCreate(LPCREATESTRUCT);
+
+	afx_msg void OnAbout();
+	afx_msg void OnExit();
+	afx_msg void OnOpenFile();
+	afx_msg void OnCopy();
 private:
 	CMFCRibbonBar m_RibbonBar;
 };
 
 BEGIN_MESSAGE_MAP(MyFrameWnd, CFrameWndEx)
 	ON_WM_CREATE()
+	ON_COMMAND(IDB_ABOUT, OnAbout)
+	ON_COMMAND(IDB_EXIT, OnExit)
+	ON_COMMAND(IDB_OPENFILE, OnOpenFile)
+	ON_COMMAND(IDB_COPY, OnCopy)
 END_MESSAGE_MAP()
 
 afx_msg int MyFrameWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -32,6 +41,26 @@ afx_msg int MyFrameWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	m_RibbonBar.LoadFromResource(IDR_RIBBON1);
 
 	return CFrameWndEx::OnCreate(lpCreateStruct);
+}
+
+afx_msg void MyFrameWnd::OnAbout()
+{
+	AfxMessageBox(TEXT("OnAbout!"));
+}
+
+afx_msg void MyFrameWnd::OnExit()
+{
+	AfxMessageBox(TEXT("OnExit!"));
+}
+
+afx_msg void MyFrameWnd::OnOpenFile()
+{
+	AfxMessageBox(TEXT("OnOpenFile!"));
+}
+
+afx_msg void MyFrameWnd::OnCopy()
+{
+	AfxMessageBox(TEXT("OnCopy!"));
 }
 
 class MyApp : public CWinApp
