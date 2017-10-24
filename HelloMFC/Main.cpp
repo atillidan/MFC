@@ -10,6 +10,11 @@
 #include <afxwin.h>
 #include <afxframewndex.h>
 #include <afxribbonbar.h>
+#include <afxribbonstatusbar.h>
+#include <afxbaseribbonelement.h>
+#include <afxRibbonLabel.h>
+#include <afxribbonbutton.h>
+#include <afxribbonstatusbarpane.h>
 
 #include "resource.h"
 
@@ -25,6 +30,7 @@ public:
 	afx_msg void OnCopy();
 private:
 	CMFCRibbonBar m_RibbonBar;
+	CMFCRibbonStatusBar m_RibbonStatusBar;
 };
 
 BEGIN_MESSAGE_MAP(MyFrameWnd, CFrameWndEx)
@@ -39,6 +45,13 @@ afx_msg int MyFrameWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
 	m_RibbonBar.Create(this);
 	m_RibbonBar.LoadFromResource(IDR_RIBBON1);
+
+	m_RibbonStatusBar.Create(this);
+	m_RibbonStatusBar.AddElement(new CMFCRibbonLabel(TEXT("About标签")), TEXT("这是一个About标签"), TRUE);
+	m_RibbonStatusBar.AddElement(new CMFCRibbonButton(IDB_ABOUT, TEXT("About按钮")), TEXT("这是一个About按钮"), TRUE);
+	m_RibbonStatusBar.AddElement(new CMFCRibbonStatusBarPane(IDB_ABOUT, TEXT("About片")), TEXT("这是一个About片"), TRUE);
+
+	m_RibbonStatusBar.GetElement(0)->SetText(TEXT("已经修改了内容。"));
 
 	return CFrameWndEx::OnCreate(lpCreateStruct);
 }
