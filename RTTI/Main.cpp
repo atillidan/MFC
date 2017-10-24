@@ -16,9 +16,9 @@
 
 class CObject
 {
-public:
-	virtual const char* GetClassName() { return NULL; };
+	DECLARE_DYNAMIC_INFO()
 };
+IMPLEMENT_DYNAMIC_INFO(CObject)
 
 class A : public CObject
 {
