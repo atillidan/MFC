@@ -8,72 +8,51 @@
  *
  ****************************************************************************************************************/
 #include <afxwin.h>
-#include <afxframewndex.h>
-#include <afxribbonbar.h>
-#include <afxribbonstatusbar.h>
-#include <afxbaseribbonelement.h>
-#include <afxRibbonLabel.h>
-#include <afxribbonbutton.h>
-#include <afxribbonstatusbarpane.h>
 
-#include "resource.h"
+class MyView : public CView
+{
+public:
+	virtual void OnDraw(CDC* pDC);
+};
 
-class MyFrameWnd : public CFrameWndEx
+void MyView::OnDraw(CDC* pDC)
+{
+	pDC->TextOut(100, 100, TEXT("我是MyView。"));
+}
+
+class MyFrameWnd : public CFrameWnd
 {
 	DECLARE_MESSAGE_MAP()
 public:
 	afx_msg int OnCreate(LPCREATESTRUCT);
+	afx_msg void OnPaint();
 
-	afx_msg void OnAbout();
-	afx_msg void OnExit();
-	afx_msg void OnOpenFile();
-	afx_msg void OnCopy();
 private:
-	CMFCRibbonBar m_RibbonBar;
-	CMFCRibbonStatusBar m_RibbonStatusBar;
+	MyView* pView;
 };
 
-BEGIN_MESSAGE_MAP(MyFrameWnd, CFrameWndEx)
+BEGIN_MESSAGE_MAP(MyFrameWnd, CFrameWnd)
 	ON_WM_CREATE()
-	ON_COMMAND(IDB_ABOUT, OnAbout)
-	ON_COMMAND(IDB_EXIT, OnExit)
-	ON_COMMAND(IDB_OPENFILE, OnOpenFile)
-	ON_COMMAND(IDB_COPY, OnCopy)
+	ON_WM_PAINT()
 END_MESSAGE_MAP()
 
 afx_msg int MyFrameWnd::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-	m_RibbonBar.Create(this);
-	m_RibbonBar.LoadFromResource(IDR_RIBBON1);
+	pView = new MyView;
+	pView->Create(NULL, TEXT("View"), WS_CHILD | WS_VISIBLE | WS_BORDER, CRect(200, 200, 600, 600), this, 0);
+	SetActiveView(pView);
 
-	m_RibbonStatusBar.Create(this);
-	m_RibbonStatusBar.AddElement(new CMFCRibbonLabel(TEXT("About标签")), TEXT("这是一个About标签"), TRUE);
-	m_RibbonStatusBar.AddElement(new CMFCRibbonButton(IDB_ABOUT, TEXT("About按钮")), TEXT("这是一个About按钮"), TRUE);
-	m_RibbonStatusBar.AddElement(new CMFCRibbonStatusBarPane(IDB_ABOUT, TEXT("About片")), TEXT("这是一个About片"), TRUE);
-
-	m_RibbonStatusBar.GetElement(0)->SetText(TEXT("已经修改了内容。"));
-
-	return CFrameWndEx::OnCreate(lpCreateStruct);
+	return CFrameWnd::OnCreate(lpCreateStruct);
 }
 
-afx_msg void MyFrameWnd::OnAbout()
+afx_msg void MyFrameWnd::OnPaint()
 {
-	AfxMessageBox(TEXT("OnAbout!"));
-}
+	PAINTSTRUCT pt;
+	CDC* pDC = BeginPaint(&pt);
 
-afx_msg void MyFrameWnd::OnExit()
-{
-	AfxMessageBox(TEXT("OnExit!"));
-}
+	pDC->TextOut(100, 100, TEXT("我是MyFrameWnd。"));
 
-afx_msg void MyFrameWnd::OnOpenFile()
-{
-	AfxMessageBox(TEXT("OnOpenFile!"));
-}
-
-afx_msg void MyFrameWnd::OnCopy()
-{
-	AfxMessageBox(TEXT("OnCopy!"));
+	EndPaint(&pt);
 }
 
 class MyApp : public CWinApp
@@ -88,14 +67,11 @@ END_MESSAGE_MAP()
 
 BOOL MyApp::InitInstance()
 {
-	AfxOleInit();
-
 	CFrameWnd* pFrameWnd = new MyFrameWnd;
-	this->m_pMainWnd = pFrameWnd;
-
 	pFrameWnd->Create(NULL, TEXT("illidan"));
 	pFrameWnd->ShowWindow(SW_SHOW);
 	pFrameWnd->UpdateWindow();
+	this->m_pMainWnd = pFrameWnd;
 
 	return TRUE;
 }
